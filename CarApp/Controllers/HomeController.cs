@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -53,6 +54,17 @@ namespace CarApp.Controllers
             ViewBag.Message = "Display list of APOs";
 
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult IssueAsset(AssetViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+
+            }
+
+            return View("IssueAsset");
         }
     }
 }
