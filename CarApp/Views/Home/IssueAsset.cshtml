@@ -9,7 +9,7 @@
     {
         @Html.ValidationSummary(true)
 
-        <div class="form-group row">
+        <div class="form-group col-sm-offset-2">
             @*<div>
                 @Html.Label("Scan or enter a barcode")
             </div>*@
@@ -19,20 +19,20 @@
 
         </div>
 
-        <div class="form-group row">
+        <div class="form-group col-sm-offset-2">
             <div >
                 <div>
                     @Html.ValidationMessageFor(model => model.SelectionValue)
                 </div>
-                @Html.RadioButtonFor(model => model.SelectionValue, "1")    @Html.Label("No new asset")<br />
-                @Html.RadioButtonFor(model => model.SelectionValue, "2")    @Html.Label("Exchanging old system for new system")<br />
-                @Html.RadioButtonFor(model => model.SelectionValue, "3")    @Html.Label("Offsite user returning old system")
+                @Html.RadioButtonFor(model => model.SelectionValue, "1")    @Html.Label("New user")<br />
+                @Html.RadioButtonFor(model => model.SelectionValue, "2")    @Html.Label("Local user receiving a new one")<br />
+                @Html.RadioButtonFor(model => model.SelectionValue, "3")    @Html.Label("Offsite user")
             </div>
             
         </div>
 
-        <div>
-            <input type="submit" value="Submit" style="float:right"/>
+        <div class="form-group col-sm-offset-3 col-sm-4">
+            <input class="" type="submit" value="Submit" style="float:right"/>
         </div>
     }
 </div>

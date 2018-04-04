@@ -66,5 +66,16 @@ namespace CarApp.Controllers
 
             return View("IssueAsset");
         }
+
+        [HttpPost]
+        public ActionResult ReceiveAsset(AssetViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+
+            return View("ReceiveAsset");
+        }
     }
 }
