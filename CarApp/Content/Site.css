@@ -31,3 +31,37 @@ textarea {
 .input-validation-error {
     border: 2px solid red;
 }
+
+
+.webgrid {
+    margin: 4px;
+    border-collapse: collapse;
+    width: 90%;
+}
+
+.webgrid-header {
+    padding: 6px 5px;
+    text-align: center;
+    background-color: #e8eef4;
+    border-bottom: 2px solid #3966A2;
+    height: 40px;
+    font-weight: bold;
+    border-top: 2px solid #D6E8FF;
+    border-left: 2px solid #D6E8FF;
+    border-right: 2px solid #D6E8FF;
+}
+
+.webgrid th, .webgrid td {
+    border: 1px solid #C0C0C0;
+    padding: 5px;
+}
+
+.webgrid-alternating-row {
+    background-color: #E8E8E8;
+    color: #000;
+}
+
+.webgrid-selected-row {
+    cursor: pointer;
+    background: #ffff99;
+}

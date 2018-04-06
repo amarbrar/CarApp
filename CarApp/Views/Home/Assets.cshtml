@@ -1,5 +1,91 @@
-﻿@{
-    ViewBag.Title = "Assets";
+﻿@*@model CarApp.Models.Asset*@
+@{
+    var grid = new WebGrid(Model);
+    ViewBag.Assets = Model;
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+@section Scripts{
+<script type="text/javascript">
+
+    $(function () {
+        var assetRow = '<tr class="webgrid-row-style">'
+            + '<td class="col2Width" > <span class="display-mode"> <label id="lblBarcode"></label>  </span> <input type="text" id="Barcode" class="edit-mode"/> </td >'
+            + '<td class="col2Width">  <span class="display-mode"> <label id="lblDeviceName"></label> </span> <input type="text" id="DeviceName" value="" class="edit-mode" /></td>'
+            + '<td class="col2Width"> <span class="display-mode"> <label id="lblManufacturer"></label> </span>  <input type="text" id="Manufacturer" value="" class="edit-mode" /> </td>'
+            + '<td class="col3Width">'
+            + '<button class="edit-user display-mode">Edit</button>'
+            + '<button class="save-user edit-mode">Save</button>'
+            + '<button class="cancel-user edit-mode">Cancel</button>'
+            + '</td>'
+            + '</tr >';
+
+        $('.edit-mode').hide();
+        $('.edit-user, .cancel-user').on('click', function () {
+            var tr = $(this).parents('tr:first');
+            tr.find('.edit-mode, .display-mode').toggle();
+        });
+        $("#addAsset").on("click", function () {
+            //var grid = document.getElementById("gridContent").children[0];
+            //var node = grid.rows[0].parentNode;
+            //var newRow = grid.rows[grid.rows.length - 1].cloneNode(true)
+            //grid.appendChild(newRow)
+            //$('.webgrid tbody:first').append(newRow);
+            $(assetRow).insertBefore("table > tbody > tr:first")
+            //var tr = $(this).parents('tr:first');
+            $('table > tbody > tr:first').find('.edit-mode .display-mode').show();
+            $('table > tbody > tr:first').find('.display-mode').hide();
+            return false;
+            cell.appendChild(element)
+        });
+
+        $('.save-user').on('click', function () {
+            var tr = $(this).parents('tr:first');
+            var DeviceName = tr.find("#DeviceName").val();
+            var Manufacturer = tr.find("#Manufacturer").val();
+            var Barcode = tr.find("#Barcode").val();
+            //tr.find("#lblName").text(Name);
+            //tr.find("#lblSurName").text(SurName);
+            tr.find('.edit-mode, .display-mode').toggle();
+            var UserModel =
+            {
+                "Barcode": Barcode,
+                "DeviceName": DeviceName,
+                "Manufacturer": Manufacturer
+            };
+            $.ajax({
+                url: '/api/Asset',
+                data: JSON.stringify(UserModel),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                }
+            });
+
+        });
+    })
+</script>
+}
+<input type="button" value="Add" id="addAsset" />
+@*@Html.ActionLink("Create New", "AddAsset");*@
+
+<div id="gridContent">
+    @grid.GetHtml(
+        tableStyle: "webgrid",
+        headerStyle: "webgrid-header",
+        footerStyle: "webgrid-footer",
+        alternatingRowStyle: "webgrid-alternating-row",
+        selectedRowStyle: "webgrid-selected-row",
+        rowStyle: "webgrid-row-style",
+        mode: WebGridPagerModes.All,
+        columns:
+            grid.Columns(
+             grid.Column("Barcode", format: @<text>  <span class="display-mode"> <label id="Barcode" >@item.Barcode</label> </span> <input type="text" id="Barcode" value="@item.Barcode" class="edit-mode" /></text>, style: "col2Width"),
+             grid.Column("DeviceName", "Device Name", format: @<text>  <span class="display-mode"> <label id="lblDeviceName">@item.DeviceName</label> </span> <input type="text" id="DeviceName" value="@item.DeviceName" class="edit-mode" /></text>, style: "col2Width"),
+             grid.Column("Manufacturer", "Manufacturer", format: @<text> <span class="display-mode"> <label id="lblManufacturer">@item.Manufacturer</label> </span>  <input type="text" id="Manufacturer" value="@item.Manufacturer" class="edit-mode" /> </text>, style: "col2Width"),
+             grid.Column("Action", format: @<text>
+                    <button class="edit-user display-mode">Edit</button>
+                    <button class="save-user edit-mode">Save</button>
+                    <button class="cancel-user edit-mode">Cancel</button>
+            </text>, style: "col3Width", canSort: false)
+           ))
+    @*grid.Column("Barcode", format: @<text>  <span class="display-mode">@item.Barcode </span> <label id="Barcode" class="edit-mode">@item.Barcode</label> </text>, style: "col2Width"),*@
+</div>
