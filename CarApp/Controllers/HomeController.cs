@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+
 using System.Web.Mvc;
 
 namespace CarApp.Controllers
@@ -30,23 +31,52 @@ namespace CarApp.Controllers
 
         public ActionResult Users()
         {
-            ViewBag.Message = "Displays list of users";
+            if (Session["users"] == null)
+                Session["users"] = UserRepository.GetUsers();
 
-            return View();
+            return View(Session["users"]);
+        }
+
+        public ActionResult UpdateUser(User value)
+        {
+            IList<User> users = new List<User>();
+            if (Session["users"] != null)
+                users = (IList<User>)Session["users"];
+
+            var user = users.FirstOrDefault(u => u.BadgeNumber == value.BadgeNumber);
+            UserRepository.MapUser(user, value);
+
+            Session["users"] = users;
+
+            return View(Session["users"]);
         }
 
         public ActionResult Assets()
         {
-            ViewBag.Message = "Display list of assets";
-            
-            var assetList = new List<Asset>()
+            if (Session["assets"] == null)
+                Session["assets"] = AssetRepository.GetAssets();
+
+            return PartialView("AssetsListView", Session["assets"]);
+        }
+
+        public ActionResult UpdateAsset(Asset value)
+        {
+            IList<Asset> assets = new List<Asset>();
+            if(Session["assets"] != null)
+                assets = (IList<Asset>) Session["assets"];
+
+            var asset = assets.FirstOrDefault(a => a.Barcode == value.Barcode);
+            if (asset != null)
+                AssetRepository.MapAsset(asset, value);
+            else
             {
-                new Asset{Barcode = 1234567, DeviceName = "Device 1", Manufacturer = "Dell"},
-                new Asset{Barcode = 2345678, DeviceName = "Device 2", Manufacturer = "Lenovo"},
-                new Asset{Barcode = 3456789, DeviceName = "Device 3", Manufacturer = "Apple"},
-                new Asset{Barcode = 4567890, DeviceName = "Device 4", Manufacturer = "IBM"}
-            };
-            return View(assetList);
+                value.Created = DateTime.Now;
+                assets.Add(value);
+            }
+
+            Session["assets"] = assets;
+
+            return PartialView("AssetsListView", Session["assets"]);
         }
 
         public ActionResult Centers()

@@ -5,15 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Results;
+
 
 namespace CarApp.Controllers
 {
     public class AssetController : ApiController
     {
-        // GET api/<controller>
-        public IEnumerable<Asset> Get()
-        {
-            var assetList = new List<Asset>()
+        private static IEnumerable<Asset> _assets = new List<Asset>()
             {
                 new Asset{Barcode = 1234567, DeviceName = "Device 1", Manufacturer = "Dell"},
                 new Asset{Barcode = 2345678, DeviceName = "Device 2", Manufacturer = "Lenovo"},
@@ -21,7 +20,15 @@ namespace CarApp.Controllers
                 new Asset{Barcode = 4567890, DeviceName = "Device 4", Manufacturer = "IBM"}
             };
 
-            return assetList;
+        //public ActionResult Get()
+        //{
+        //    return PartialViewResult("Asw")
+        //}
+
+        // GET api/<controller>
+        public JsonResult<IEnumerable<Asset>> Get()
+        {
+            return Json(_assets);
         }
 
         // GET api/<controller>/5
@@ -31,8 +38,13 @@ namespace CarApp.Controllers
         }
 
         // POST api/<controller>
-        public void Update([FromBody]Asset value)
+        public JsonResult<IEnumerable<Asset>> Update([FromBody]Asset value)
         {
+            //var assets = AssetRepository.GetAssets();
+            var assets = _assets.ToList();
+                assets.Add(value);
+
+            return Json((IEnumerable<Asset>)assets);
         }
 
         // PUT api/<controller>/5
