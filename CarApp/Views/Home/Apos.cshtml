@@ -1,5 +1,94 @@
-﻿@{
-    ViewBag.Title = "APO List";
+﻿@model IEnumerable<CarApp.Models.User>
+
+@{
+    var grid = new WebGrid(Model);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            var assetRow = '<tr class="webgrid-row-style">'
+                + '<td class="col2Width" > <span class="display-mode"> <label id="lblBarcode"></label>  </span> <input type="text" id="Barcode" class="edit-mode"/> </td >'
+                + '<td class="col2Width">  <span class="display-mode"> <label id="lblDeviceName"></label> </span> <input type="text" id="DeviceName" value="" class="edit-mode" /></td>'
+                + '<td class="col2Width"> <span class="display-mode"> <label id="lblManufacturer"></label> </span>  <input type="text" id="Manufacturer" value="" class="edit-mode" /> </td>'
+                + '<td class="col3Width">'
+                + '<button class="edit-user display-mode">Edit</button>'
+                + '<button class="save-user edit-mode">Save</button>'
+                + '<button class="cancel-user edit-mode">Cancel</button>'
+                + '</td>'
+                + '</tr >';
+
+            $('.edit-mode').hide();
+            $(document).on('click', '.edit-user, .cancel-user', function () {
+                var tr = $(this).parents('tr:first');
+                tr.find('.edit-mode, .display-mode').toggle();
+            });
+
+            $(document).on('click', '.save-user', function () {
+                var tr = $(this).parents('tr:first');
+                var firstName = tr.find("#badgeNumber").val();
+                var firstName = tr.find("#firstName").val();
+                var email = tr.find("#email").val();
+                var lastName = tr.find("#lastName").val();
+                tr.find('.edit-mode, .display-mode').toggle();
+                var UserModel =
+                    {
+                        "BadgeNumber": tr.find("#badgeNumber").text(),
+                        "FirstName": firstName,
+                        "LastName": lastName,
+                        "Email": email,
+                        "IsAdmin": tr.find("#isAdmin").is(":checked") === true ? 1 : 0,
+                        "CanSendReminder": tr.find("#canSendReminder").is(":checked") === true ? 1 : 0,
+                        "IsActive": tr.find("#isActive").is(":checked") === true ? 1 : 0
+                    };
+
+                tr.find("#lblFirstName").text(UserModel.FirstName)
+                tr.find("#lblLastName").text(UserModel.LastName)
+                tr.find("#lblEmail").text(UserModel.Email)
+                tr.find("#lblIsAdmin").prop("checked", tr.find("#isAdmin").is(":checked"))
+                tr.find("#lblCanSendReminder").prop("checked", tr.find("#canSendReminder").is(":checked"))
+                tr.find("#lblIsActive").prop("checked", tr.find("#isActive").is(":checked"))
+
+                $.ajax({
+                    url: '/Home/UpdateUser',
+                    data: JSON.stringify(UserModel),
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        isAdding = false;
+                    }
+                });
+
+            });
+        })
+    </script>
+}
+
+
+@grid.GetHtml(
+    htmlAttributes: new { id = "webgridexample" },
+    tableStyle: "webgrid",
+    headerStyle: "webgrid-header",
+    footerStyle: "webgrid-footer",
+    alternatingRowStyle: "webgrid-alternating-row",
+    selectedRowStyle: "webgrid-selected-row",
+    rowStyle: "webgrid-row-style",
+    mode: WebGridPagerModes.All,
+    columns:
+        grid.Columns(
+            grid.Column("", "", format: @<text>  <span class="display-mode" style="display:none"> <label id="badgeNumber">@item.BadgeNumber</label> </span> </text>, style: "display:none; width:0"),
+         grid.Column("FirstName", "First Name", format: @<text>  <span class="display-mode"> <label id="lblFirstname">@item.FirstName</label> </span> <input type="text" id="firstName" value="@item.FirstName" class="edit-mode" /></text>, style: "col2Width"),
+         grid.Column("LastName", "Last Name", format: @<text>  <span class="display-mode"> <label id="lblLastName">@item.LastName</label> </span> <input type="text" id="lastName" value="@item.LastName" class="edit-mode" /></text>, style: "col2Width"),
+         grid.Column("Email", "Email", format: @<text> <span class="display-mode"> <label id="lblEmail">@item.Email</label> </span>  <input type="text" id="email" value="@item.Email" class="edit-mode" /> </text>, style: "col2Width"),
+        grid.Column("IsAdmin", "Is Admin?", format: @<text>  <span class="display-mode"> <input type="checkbox" id="lblIsAdmin" checked="@item.IsAdmin" disabled /> </span>  <input type="checkbox" id="isAdmin" checked="@item.IsAdmin" class="edit-mode" /> </text>, style: "col1Width"),
+        grid.Column("CanSendReminder", "Can Send Reminder?", format: @<text> <span class="display-mode"> <input type="checkbox" id="lblCanSendReminder" checked="@item.CanSendReminder" disabled /> </span>  <input type="checkbox" id="canSendReminder" checked="@item.CanSendReminder" class="edit-mode" /> </text>),
+        grid.Column("IsActive", "Is Active?", format: @<text> <span class="display-mode"> <input type="checkbox" id="lblIsActive" checked="@item.IsActive" disabled /> </span>  <input type="checkbox" id="isActive" checked="@item.IsActive" class="edit-mode" /> </text>),
+         grid.Column("Action", format: @<text>
+                <button class="edit-user display-mode">Edit</button>
+                <button class="save-user edit-mode">Save</button>
+                <button class="cancel-user edit-mode">Cancel</button>
+        </text>, style: "col3Width", canSort: false)
+       ))

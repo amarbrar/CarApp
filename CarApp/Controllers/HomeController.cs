@@ -31,8 +31,8 @@ namespace CarApp.Controllers
 
         public ActionResult Users()
         {
-            if (Session["users"] == null)
-                Session["users"] = UserRepository.GetUsers();
+            //if (Session["users"] == null)
+            Session["users"] = UserRepository.GetUsers().Where(u => !u.IsAdmin);
 
             return View(Session["users"]);
         }
@@ -81,22 +81,38 @@ namespace CarApp.Controllers
 
         public ActionResult Centers()
         {
-            ViewBag.Message = "Display list of Centers";
+            if (Session["centers"] == null)
+                Session["centers"] = CenterRepository.GetCenters();
 
-            return View();
+            return View(Session["centers"]);
+        }
+
+        public ActionResult UpdateCenter(Center value)
+        {
+            IList<Center> centers = new List<Center>();
+            if (Session["centers"] != null)
+                centers = (IList<Center>)Session["centers"];
+
+            var center = centers.FirstOrDefault(a => a.Id == value.Id);
+            if (center != null)
+                CenterRepository.MapCenter(center, value);
+            else
+            {
+                value.Created = DateTime.Now;
+                centers.Add(value);
+            }
+
+            Session["centers"] = centers;
+
+            return View(Session["centers"]);
         }
 
         public ActionResult Apos()
         {
-            ViewBag.Message = "Display list of APOs";
+            //if (Session["users"] == null)
+            Session["users"] = UserRepository.GetUsers().Where(u => u.IsAdmin);
 
-            return View();
-        }
-
-
-        public void AddAsset()
-        {
-            var assetList = ViewBag.Assets;
+            return View(Session["users"]);
         }
 
         [HttpPost]

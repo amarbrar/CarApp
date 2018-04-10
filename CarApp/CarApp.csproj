@@ -154,6 +154,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AssetController.cs" />
     <Compile Include="Controllers\AssetRepository.cs" />
+    <Compile Include="Controllers\CenterRepository.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserRepository.cs" />
     <Compile Include="Global.asax.cs">
@@ -164,6 +165,7 @@
     <Compile Include="Models\AssetViewModel.cs" />
     <Compile Include="Models\AuditAsset.cs" />
     <Compile Include="Models\AssetState.cs" />
+    <Compile Include="Models\Center.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

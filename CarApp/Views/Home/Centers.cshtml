@@ -1,5 +1,99 @@
-﻿@{
-    ViewBag.Title = "Centers";
+﻿@model IEnumerable<CarApp.Models.Center>
+
+@{
+    var grid = new WebGrid(Model, ajaxUpdateContainerId: "webgridexample");
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+
+@section Scripts{
+    <script type="text/javascript">
+
+    $(function () {
+        var assetRow = '<tr class="webgrid-row-style">'
+            + '<td class="col2Width" > <span class="display-mode" style="display:none"> <label id="lblId"></label>  </span>  </td >'
+            + '<td class="col2Width">  <span class="display-mode"> <label id="lblCenterName"></label> </span> <input type="text" id="centerName" value="" class="edit-mode" /></td>'
+            + '<td class="col2Width"> <span class="display-mode"> <label id="lblDescription"></label> </span>  <input type="text" id="description" value="" class="edit-mode" /> </td>'
+            + '<td class="col3Width">'
+            + '<button class="edit-user display-mode">Edit</button>'
+            + '<button class="save-user edit-mode">Save</button>'
+            + '<button class="cancel-user edit-mode">Cancel</button>'
+            + '</td>'
+            + '</tr >';
+        var isAdding = false;
+
+        $('.edit-mode').hide();
+        $(document).on('click', '.edit-user, .cancel-user', function () {
+            var tr = $(this).parents('tr:first');
+            tr.find('.edit-mode, .display-mode').toggle();
+
+            if (isAdding) {
+                $(this).closest('tr').remove();
+                isAdding = false;
+            }
+        });
+
+        $("#addCenter").on("click", function () {
+            $(assetRow).insertBefore("table > tbody > tr:first")
+            $('table > tbody > tr:first').find('.edit-mode').show();
+            $('table > tbody > tr:first').find('.display-mode').hide();
+            isAdding = true;
+            return false;
+            cell.appendChild(element)
+        });
+
+        $(document).on('click', '.save-user', function () {
+            var tr = $(this).parents('tr:first');
+            
+            tr.find('.edit-mode, .display-mode').toggle();
+            var UserModel =
+                {
+                "Id": tr.find("#id").text(),
+                "Name": tr.find("#centerName").val(),
+                "Description": tr.find("#description").val(),
+                //"IsActive": tr.find("#isActive").is(":checked") === true ? 1 : 0
+            };
+
+            tr.find("#lblId").text(UserModel.Id);
+            tr.find("#lblCenterName").text(UserModel.Name)
+            tr.find("#lblDescription").text(UserModel.Description)
+
+            $.ajax({
+                url: '/Home/UpdateCenter',
+                data: JSON.stringify(UserModel),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    isAdding = false;
+                    
+                }
+            });
+
+        });
+    })
+    </script>
+}
+
+<input type="button" value="Add" id="addCenter" />
+
+@grid.GetHtml(
+    htmlAttributes: new { id = "webgridexample" },
+    tableStyle: "webgrid",
+    headerStyle: "webgrid-header",
+    footerStyle: "webgrid-footer",
+    alternatingRowStyle: "webgrid-alternating-row",
+    selectedRowStyle: "webgrid-selected-row",
+    rowStyle: "webgrid-row-style",
+    mode: WebGridPagerModes.All,
+    columns:
+        grid.Columns(
+            grid.Column("", "", format: @<text>  <span class="display-mode" style="display:none"> <label id="id">@item.Id</label> </span> </text>, style: "display:none; width:0"),
+         grid.Column("Name", "Name", format: @<text>  <span class="display-mode"> <label id="lblCenterName">@item.Name</label> </span> <input type="text" id="centerName" value="@item.Name" class="edit-mode" /></text>, style: "col2Width"),
+         grid.Column("Description", "Description", format: @<text>  <span class="display-mode"> <label id="lblDescription">@item.Description</label> </span> <input type="text" id="description" value="@item.Description" class="edit-mode" /></text>, style: "col2Width"),
+        @*grid.Column("IsActive", "Is Active?", format: @<text> <span class="display-mode"> <input type="checkbox" checked="@item.IsActive" disabled /> </span>  <input type="checkbox" id="isActive" checked="@item.IsActive" class="edit-mode" /> </text>),*@
+         grid.Column("Action", format: @<text>
+                <button class="edit-user display-mode">Edit</button>
+                <button class="save-user edit-mode">Save</button>
+                <button class="cancel-user edit-mode">Cancel</button>
+        </text>, style: "col2Width", canSort: false)
+       ))

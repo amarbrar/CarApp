@@ -43,7 +43,14 @@
                 "IsAdmin": tr.find("#isAdmin").is(":checked") === true ?1:0,
                 "CanSendReminder": tr.find("#canSendReminder").is(":checked") === true ? 1 : 0,
                 "IsActive": tr.find("#isActive").is(":checked") === true ? 1 : 0
-            };
+                };
+
+            tr.find("#lblFirstName").text(UserModel.FirstName)
+            tr.find("#lblLastName").text(UserModel.LastName)
+            tr.find("#lblEmail").text(UserModel.Email)
+            tr.find("#lblIsAdmin").prop("checked", tr.find("#isAdmin").is(":checked"))
+            tr.find("#lblCanSendReminder").prop("checked", tr.find("#canSendReminder").is(":checked"))
+            tr.find("#lblIsActive").prop("checked", tr.find("#isActive").is(":checked"))
 
             $.ajax({
                 url: '/Home/UpdateUser',
@@ -52,8 +59,6 @@
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     isAdding = false;
-
-                    $('#webgridexample').val(data);
                 }
             });
 
@@ -78,9 +83,9 @@
          grid.Column("FirstName", "First Name", format: @<text>  <span class="display-mode"> <label id="lblFirstname">@item.FirstName</label> </span> <input type="text" id="firstName" value="@item.FirstName" class="edit-mode" /></text>, style: "col2Width"),
          grid.Column("LastName", "Last Name", format: @<text>  <span class="display-mode"> <label id="lblLastName">@item.LastName</label> </span> <input type="text" id="lastName" value="@item.LastName" class="edit-mode" /></text>, style: "col2Width"),
          grid.Column("Email", "Email", format: @<text> <span class="display-mode"> <label id="lblEmail">@item.Email</label> </span>  <input type="text" id="email" value="@item.Email" class="edit-mode" /> </text>, style: "col2Width"),
-        grid.Column("IsAdmin", "Is Admin?", format: @<text>  <span class="display-mode"> <input type="checkbox" checked="@item.IsAdmin" disabled/> </span>  <input type="checkbox" id="isAdmin" checked="@item.IsAdmin" class="edit-mode" /> </text>, style: "col1Width"),
-        grid.Column("CanSendReminder", "Can Send Reminder?", format: @<text> <span class="display-mode"> <input type="checkbox"  checked="@item.CanSendReminder" disabled /> </span>  <input type="checkbox" id="canSendReminder" checked="@item.CanSendReminder" class="edit-mode" /> </text>),
-        grid.Column("IsActive", "Is Active?", format: @<text> <span class="display-mode"> <input type="checkbox" checked="@item.IsActive" disabled /> </span>  <input type="checkbox" id="isActive" checked="@item.IsActive" class="edit-mode" /> </text>),
+        grid.Column("IsAdmin", "Is Admin?", format: @<text>  <span class="display-mode"> <input type="checkbox" id="lblIsAdmin" checked="@item.IsAdmin" disabled/> </span>  <input type="checkbox" id="isAdmin" checked="@item.IsAdmin" class="edit-mode" /> </text>, style: "col1Width"),
+        grid.Column("CanSendReminder", "Can Send Reminder?", format: @<text> <span class="display-mode"> <input type="checkbox" id="lblCanSendReminder"  checked="@item.CanSendReminder" disabled /> </span>  <input type="checkbox" id="canSendReminder" checked="@item.CanSendReminder" class="edit-mode" /> </text>),
+        grid.Column("IsActive", "Is Active?", format: @<text> <span class="display-mode"> <input type="checkbox" id="lblIsActive" checked="@item.IsActive" disabled /> </span>  <input type="checkbox" id="isActive" checked="@item.IsActive" class="edit-mode" /> </text>),
          grid.Column("Action", format: @<text>
                 <button class="edit-user display-mode">Edit</button>
                 <button class="save-user edit-mode">Save</button>
